@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Test `uncommitted`'s implementation."""
 
 import mock
