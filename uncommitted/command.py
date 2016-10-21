@@ -2,10 +2,10 @@
 
 import os
 import re
-import subprocess
 import sys
 from functools import partial
 from optparse import OptionParser
+from subprocess import CalledProcessError, check_output
 
 USAGE = '''usage: %prog [options] path [path...]
 
@@ -22,8 +22,8 @@ globchar = re.compile(r'([][*?])')
 def run(command, **kw):
     """Run `command`, catch any exception, and return lines of output."""
     try:
-        output = subprocess.check_output(command, **kw)
-    except subprocess.CalledProcessError:
+        output = check_output(command, **kw)
+    except CalledProcessError:
         return []
     return output.decode(errors='replace').splitlines()
 
@@ -42,8 +42,8 @@ def find_repositories_with_locate(path):
         command.append(r'%s\/%s' % (escape(path), escape(dotdir)))
         command.append(r'%s\/*/%s' % (escape(path), escape(dotdir)))
     try:
-        paths = subprocess.check_output(command).strip('\0').split('\0')
-    except subprocess.CalledProcessError:
+        paths = check_output(command).strip('\0').split('\0')
+    except CalledProcessError:
         return []
     return [ os.path.split(p) for p in paths
              if not os.path.islink(p) and os.path.isdir(p) ]
